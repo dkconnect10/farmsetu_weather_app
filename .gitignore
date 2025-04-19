@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Django specific
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+static/
+local_settings.py
+.env
+*.sqlite3
+
+# PostgreSQL config (if used locally)
+*.pgdata
+
+# VSCode
+.vscode/
+
+# Pytest / testing cache
+.pytest_cache/
+coverage/
+
+# MacOS
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Migrations (optional — only if you want to ignore)
+# **/*/migrations/
+# !**/migrations/__init__.py
+
+# Node (if you're mixing frontend)
+node_modules/
+build/
+dist/
+
+# Others
+*.bak
+*.swp
