@@ -5,19 +5,20 @@ from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 import io
 from .models import WeatherRecord
+from .serializers import WeatherRecordSerializer
+from rest_framework import status
 
 @method_decorator(csrf_exempt, name='dispatch')
-class WeatherDataView(APIView):
+class WeatherDataFileUpload(APIView):
     def post(self, request):
         file = request.FILES.get('file')
         if not file:
-            return Response({"message": "File is required"}, status=400)
+            return Response({"message": "File is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         decoded_file = io.TextIOWrapper(file.file, encoding='utf-8')
         df = pd.read_csv(decoded_file, sep=r'\s+', engine='python', na_values=["---"])
         df = df.dropna()
         df.columns = df.columns.str.strip()
-        
 
         records = df.to_dict(orient='records')
         all_data = [
@@ -45,4 +46,26 @@ class WeatherDataView(APIView):
         ]
 
         WeatherRecord.objects.bulk_create(all_data)
-        return Response({"message": "Data uploaded successfully"}, status=201)
+        return Response({"message": "Data uploaded successfully"}, status=status.HTTP_201_CREATED)
+
+
+class GetWeatherData(APIView):
+    def get(self, request):
+        year = request.query_params.get('year')    
+
+        if not year:
+            return Response({"message": "Please Enter the year"}, status=status.HTTP_400_BAD_REQUEST)
+           
+        weather_data = WeatherRecord.objects.filter(year=year)
+        
+        if not weather_data.exists():
+            return Response({"message": "Record not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serialize_data = WeatherRecordSerializer(weather_data, many=True)
+        record = {
+            "data": serialize_data.data,
+            "successful": True,
+            "status": status.HTTP_200_OK
+        }
+
+        return Response(record, status=status.HTTP_200_OK)

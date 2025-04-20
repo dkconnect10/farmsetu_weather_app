@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import WeatherDataView
+from .views import WeatherDataFileUpload,GetWeatherData
 
 urlpatterns = [
-    path('WeatherDataView', WeatherDataView.as_view(), name='WeatherDataView'),
+    path('WeatherDataFileUpload', WeatherDataFileUpload.as_view(), name='WeatherDataFileUpload'),
+    path('GetWeatherData',GetWeatherData.as_view(),name='GetWeatherData')
 ]
